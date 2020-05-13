@@ -1,14 +1,16 @@
-from scapy.all import *
-from scapy.layers.l2 import ARP
+import sys
+from proxy import TransparentProxy
 
-arp_packet = ARP()
-print(">>> Before")
-arp_packet.display()
 
-arp_packet.pdst = '192.168.43.85' #(say IP address of target machine)
-arp_packet.hwsrc = '11:11:11:11:11:11'
-arp_packet.psrc = '1.1.1.1'
-arp_packet.hwdst = 'ff:ff:ff:ff:ff:ff'
+try:
+    print("[*] Starting transparent proxy...")
 
-print(">>> After")
-arp_packet.display()
+    trans_proxy = TransparentProxy('wlan0', '192.168.1.1', '192.168.1.144')
+    trans_proxy.process_spooftraffic()
+    trans_proxy.sniff_traffic()
+except KeyboardInterrupt:
+    sys.exit(0)
+except Exception as ex:
+    sys.exit(1)
+finally:
+    print("[*] Exiting...")
